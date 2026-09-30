@@ -1,5 +1,8 @@
-// Builds the public site: minified copy of every repo-backed item in site.json plus the home page.
-// Sources are expected in src/<path> (the workflow clones them there).
+// Builds the public site from site.json: title, tagline and sections of items.
+// Item with `repo` + `path`: cloned into src/<path> by the workflow (SOURCES_TOKEN for private repos),
+// minified here and served at /<path>/. Its repo sends a `source-updated` dispatch on push.
+// Item with `url`: plain link card.
+// Local build: npm ci, git clone <repo> src/<path>, npm run build (output in dist/).
 import { readFile, writeFile, mkdir, readdir, copyFile, rm } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { minify as minifyHtml } from 'html-minifier-terser';
