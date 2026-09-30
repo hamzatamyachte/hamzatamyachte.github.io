@@ -27,6 +27,13 @@
           "name": "Color Sort",
           "description": "Sort the balls so every tube holds one color. 30 levels, stars and themes.",
           "icon": "icons/icon-180.png"
+        },
+        {
+          "repo": "hamzatamyachte/iphone-block-pop",
+          "path": "iphone-block-pop",
+          "name": "Block Pop",
+          "description": "Drag blocks onto the grid, fill rows and columns to pop them. Chase your best score.",
+          "icon": "icons/icon-180.png"
         }
       ]
     }
