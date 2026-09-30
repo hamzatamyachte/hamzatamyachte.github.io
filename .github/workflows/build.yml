@@ -1,11 +1,11 @@
-name: Build and deploy games
+name: Build and deploy site
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
   repository_dispatch:
-    types: [game-updated]
+    types: [source-updated]
 
 permissions:
   contents: read
@@ -29,17 +29,17 @@ jobs:
 
       - run: npm ci
 
-      # GAMES_TOKEN: fine-grained PAT with read-only "Contents" on the game repos.
-      # Without it the clone only works while the game repos are public.
-      - name: Clone game sources
+      # SOURCES_TOKEN: fine-grained PAT with read-only "Contents" on the private source repos.
+      # Without it only public repos can be cloned.
+      - name: Clone sources
         env:
-          GAMES_TOKEN: ${{ secrets.GAMES_TOKEN }}
+          SOURCES_TOKEN: ${{ secrets.SOURCES_TOKEN }}
         run: |
           mkdir -p src
-          for row in $(jq -r '.[] | "\(.repo)|\(.path)"' games.json); do
+          for row in $(jq -r '.sections[].items[] | select(.repo) | "\(.repo)|\(.path)"' site.json); do
             repo="${row%%|*}"; path="${row##*|}"
-            if [ -n "$GAMES_TOKEN" ]; then
-              url="https://x-access-token:${GAMES_TOKEN}@github.com/${repo}.git"
+            if [ -n "$SOURCES_TOKEN" ]; then
+              url="https://x-access-token:${SOURCES_TOKEN}@github.com/${repo}.git"
             else
               url="https://github.com/${repo}.git"
             fi

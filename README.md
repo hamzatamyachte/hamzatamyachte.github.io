@@ -1,19 +1,27 @@
-# Games
+# hamzatamyachte.github.io
 
-Public site for small iPhone web games: https://hamzatamyachte.github.io/
+Public site: https://hamzatamyachte.github.io/
 
-The game sources live in private repositories. On every push to a game (or to this repo),
-the workflow clones each game listed in `games.json`, minifies it and deploys the result to GitHub Pages.
-Each game keeps its own path, for example `/iphone-hanoi/`.
+The home page and every page on this site are generated from `site.json`. Items with a `repo`
+are built from that (usually private) repository: the workflow clones it, minifies it and serves it at
+`/<path>/`. Items with a `url` are plain links.
 
-## Add a game
+## site.json
 
-1. Add an entry to `games.json` (`repo`, `path`, `name`, `description`, `icon`).
-2. Give the `GAMES_TOKEN` secret read access to the new repo.
-3. Add the notify workflow to the game repo so pushes trigger a rebuild.
+- `title`, `tagline`: home page header.
+- `sections[]`: `id`, `title`, optional `note`, and `items[]`.
+- Built item: `repo`, `path`, `name`, `description`, `icon` (relative to the built path).
+- Link item: `url`, `name`, `description`, optional `icon`.
+
+## Add a repo-backed item
+
+1. Add it to a section in `site.json`.
+2. Give the `SOURCES_TOKEN` secret read access to the repo.
+3. Add a workflow to that repo that sends a `source-updated` dispatch to this repo on push,
+   using a `SITE_DISPATCH_TOKEN` secret.
 
 ## Build locally
 
     npm ci
-    git clone <game repo> src/<path>
+    git clone <repo> src/<path>
     npm run build   # output in dist/

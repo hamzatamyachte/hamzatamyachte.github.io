@@ -1,5 +1,5 @@
-// Builds the public site: minified copy of every game in games.json plus the games list page.
-// Game sources are expected in src/<path> (the workflow clones them there).
+// Builds the public site: minified copy of every repo-backed item in site.json plus the home page.
+// Sources are expected in src/<path> (the workflow clones them there).
 import { readFile, writeFile, mkdir, readdir, copyFile, rm } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { minify as minifyHtml } from 'html-minifier-terser';
@@ -50,37 +50,57 @@ function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-async function buildGame(game) {
-  const srcDir = join(SRC, game.path);
+async function buildItem(item) {
+  const srcDir = join(SRC, item.path);
   for (const file of await walk(srcDir)) {
     const rel = file.slice(srcDir.length + 1);
     if (rel === 'README.md' || rel === 'package.json' || rel.startsWith('node_modules')) continue;
-    const to = join(DIST, game.path, rel);
+    const to = join(DIST, item.path, rel);
     await mkdir(join(to, '..'), { recursive: true });
     await buildFile(file, to);
   }
 }
 
-async function buildIndex(games) {
-  const cards = games.map(g => `
-    <a class="game" href="${g.path}/">
-      <img src="${g.path}/${g.icon}" alt="" width="72" height="72">
+// Repo-backed items link to their built path, others to their own url.
+function itemCard(item) {
+  const href = item.repo ? `${item.path}/` : item.url;
+  const icon = item.icon ? (item.repo ? `${item.path}/${item.icon}` : item.icon) : null;
+  const external = item.repo ? '' : ' target="_blank" rel="noopener"';
+  return `
+    <a class="item" href="${escapeHtml(href)}"${external}>
+      ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="72" height="72">` : ''}
       <span class="text">
-        <span class="name">${escapeHtml(g.name)}</span>
-        <span class="desc">${escapeHtml(g.description)}</span>
+        <span class="name">${escapeHtml(item.name)}</span>
+        ${item.description ? `<span class="desc">${escapeHtml(item.description)}</span>` : ''}
       </span>
-    </a>`).join('');
+    </a>`;
+}
+
+function sectionHtml(section) {
+  return `
+  <section id="${escapeHtml(section.id)}">
+    <h2>${escapeHtml(section.title)}</h2>
+    <div class="list">${section.items.map(itemCard).join('')}</div>
+    ${section.note ? `<p class="note">${escapeHtml(section.note)}</p>` : ''}
+  </section>`;
+}
+
+async function buildIndex(site) {
   const template = await readFile('site/index.html', 'utf8');
-  const html = template.replace('<!--GAMES-->', cards);
+  const html = template
+    .replaceAll('{{title}}', escapeHtml(site.title))
+    .replaceAll('{{tagline}}', escapeHtml(site.tagline || ''))
+    .replace('<!--SECTIONS-->', site.sections.map(sectionHtml).join(''));
   await writeFile(join(DIST, 'index.html'), await minifyHtml(html, htmlOptions));
 }
 
-const games = JSON.parse(await readFile('games.json', 'utf8'));
+const site = JSON.parse(await readFile('site.json', 'utf8'));
+const items = site.sections.flatMap(s => s.items);
 await rm(DIST, { recursive: true, force: true });
 await mkdir(DIST, { recursive: true });
-for (const game of games) {
-  await buildGame(game);
-  console.log(`built ${game.path}`);
+for (const item of items.filter(i => i.repo)) {
+  await buildItem(item);
+  console.log(`built ${item.path}`);
 }
-await buildIndex(games);
-console.log(`built index (${games.length} games, build ${BUILD_ID})`);
+await buildIndex(site);
+console.log(`built index (${site.sections.length} sections, ${items.length} items, build ${BUILD_ID})`);

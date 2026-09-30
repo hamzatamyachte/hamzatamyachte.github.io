@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0b0b1a">
-<title>Games</title>
+<title>{{title}}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
 <style>
   :root {
@@ -34,29 +34,32 @@
   }
   main { max-width: 560px; margin: 0 auto; }
   h1 { font-size: 34px; margin: 0 0 4px; letter-spacing: -0.5px; }
-  .sub { color: var(--dim); margin: 0 0 24px; font-size: 15px; }
+  .sub { color: var(--dim); margin: 0 0 32px; font-size: 15px; }
+  section + section { margin-top: 40px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin: 0 0 12px; }
   .list { display: grid; gap: 12px; }
-  .game {
+  .item {
     display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 20px;
     background: var(--card); color: inherit; text-decoration: none;
     transition: background .15s, transform .15s;
   }
-  .game:hover { background: var(--card-hover); }
-  .game:active { transform: scale(.98); }
-  .game:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .game img { width: 72px; height: 72px; border-radius: 16px; flex: none; }
+  .item:hover { background: var(--card-hover); }
+  .item:active { transform: scale(.98); }
+  .item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .item img { width: 72px; height: 72px; border-radius: 16px; flex: none; }
   .text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .name { font-size: 19px; font-weight: 700; }
   .desc { color: var(--dim); font-size: 14px; line-height: 1.35; }
-  .tip { color: var(--dim); font-size: 13px; margin-top: 24px; text-align: center; }
+  .note { color: var(--dim); font-size: 13px; margin: 16px 0 0; text-align: center; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Games</h1>
-  <p class="sub">Small games made for iPhone.</p>
-  <div class="list"><!--GAMES--></div>
-  <p class="tip">Tip: open a game in Safari, tap Share, then "Add to Home Screen" to play full screen and offline.</p>
+  <header>
+    <h1>{{title}}</h1>
+    <p class="sub">{{tagline}}</p>
+  </header>
+<!--SECTIONS-->
 </main>
 </body>
 </html>

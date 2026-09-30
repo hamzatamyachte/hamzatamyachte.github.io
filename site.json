@@ -1,0 +1,27 @@
+{
+  "title": "Hamza Tamyachte",
+  "tagline": "Games and side projects.",
+  "sections": [
+    {
+      "id": "games",
+      "title": "Games",
+      "note": "Tip: open a game in Safari, tap Share, then \"Add to Home Screen\" to play full screen and offline.",
+      "items": [
+        {
+          "repo": "hamzatamyachte/iphone-hanoi",
+          "path": "iphone-hanoi",
+          "name": "Hanoi",
+          "description": "Move the tower, one disc at a time. Earn stars, coins and themes.",
+          "icon": "icons/icon-180.png"
+        },
+        {
+          "repo": "hamzatamyachte/iphone-web-game",
+          "path": "iphone-web-game",
+          "name": "Dodge",
+          "description": "Dodge meteors, grab coins, unlock animal friends.",
+          "icon": "icons/fox-180.png"
+        }
+      ]
+    }
+  ]
+}
