@@ -1,0 +1,65 @@
+name: Build and deploy games
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [game-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # GAMES_TOKEN: fine-grained PAT with read-only "Contents" on the game repos.
+      # Without it the clone only works while the game repos are public.
+      - name: Clone game sources
+        env:
+          GAMES_TOKEN: ${{ secrets.GAMES_TOKEN }}
+        run: |
+          mkdir -p src
+          for row in $(jq -r '.[] | "\(.repo)|\(.path)"' games.json); do
+            repo="${row%%|*}"; path="${row##*|}"
+            if [ -n "$GAMES_TOKEN" ]; then
+              url="https://x-access-token:${GAMES_TOKEN}@github.com/${repo}.git"
+            else
+              url="https://github.com/${repo}.git"
+            fi
+            git clone --depth 1 --quiet "$url" "src/$path"
+          done
+
+      - run: npm run build
+        env:
+          BUILD_ID: ${{ github.run_number }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

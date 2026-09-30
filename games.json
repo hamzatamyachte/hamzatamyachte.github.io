@@ -1,0 +1,16 @@
+[
+  {
+    "repo": "hamzatamyachte/iphone-hanoi",
+    "path": "iphone-hanoi",
+    "name": "Hanoi",
+    "description": "Move the tower, one disc at a time. Earn stars, coins and themes.",
+    "icon": "icons/icon-180.png"
+  },
+  {
+    "repo": "hamzatamyachte/iphone-web-game",
+    "path": "iphone-web-game",
+    "name": "Dodge",
+    "description": "Dodge meteors, grab coins, unlock animal friends.",
+    "icon": "icons/fox-180.png"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "games-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.36.0"
+  }
+}
