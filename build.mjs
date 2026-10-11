@@ -57,7 +57,7 @@ async function buildItem(item) {
   const srcDir = join(SRC, item.path);
   for (const file of await walk(srcDir)) {
     const rel = file.slice(srcDir.length + 1);
-    if (rel === 'README.md' || rel === 'package.json' || rel.startsWith('node_modules')) continue;
+    if (rel === 'README.md' || rel === 'package.json' || rel.startsWith('node_modules') || rel.startsWith('test/')) continue;
     const to = join(DIST, item.path, rel);
     await mkdir(join(to, '..'), { recursive: true });
     await buildFile(file, to);
