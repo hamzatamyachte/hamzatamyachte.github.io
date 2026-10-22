@@ -19,7 +19,8 @@
           "path": "iphone-web-game",
           "name": "Dodge",
           "description": "Dodge meteors, grab coins, unlock animal friends.",
-          "icon": "icons/fox-180.png"
+          "icon": "icons/fox-180.png",
+          "unlisted": true
         },
         {
           "repo": "hamzatamyachte/iphone-color-sort",
@@ -47,6 +48,20 @@
           "path": "iphone-park-workout",
           "name": "Park Workout",
           "description": "Workout timer: routines for every goal, levels 1 to 10, rounds and rest, voice cues.",
+          "icon": "icons/icon-180.png"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "title": "Home",
+      "note": "Tip: open it in Safari, tap Share, then \"Add to Home Screen\" so it runs full screen and works offline.",
+      "items": [
+        {
+          "repo": "hamzatamyachte/iphone-boodschappen",
+          "path": "iphone-boodschappen",
+          "name": "Boodschappen",
+          "description": "Shopping list: everyday items by category and shop, tick off what is in the cart.",
           "icon": "icons/icon-180.png"
         }
       ]

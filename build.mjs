@@ -2,6 +2,7 @@
 // Item with `repo` + `path`: cloned into src/<path> by the workflow (SOURCES_TOKEN for private repos),
 // minified here and served at /<path>/. Its repo sends a `source-updated` dispatch on push.
 // Item with `url`: plain link card.
+// Item with `unlisted: true`: still built and served at /<path>/, but left off the index page.
 // Local build: npm ci, git clone <repo> src/<path>, npm run build (output in dist/).
 import { readFile, writeFile, mkdir, readdir, copyFile, rm } from 'node:fs/promises';
 import { join, extname } from 'node:path';
@@ -80,10 +81,12 @@ function itemCard(item) {
 }
 
 function sectionHtml(section) {
+  const items = section.items.filter(i => !i.unlisted);
+  if (!items.length) return '';
   return `
   <section id="${escapeHtml(section.id)}">
     <h2>${escapeHtml(section.title)}</h2>
-    <div class="list">${section.items.map(itemCard).join('')}</div>
+    <div class="list">${items.map(itemCard).join('')}</div>
     ${section.note ? `<p class="note">${escapeHtml(section.note)}</p>` : ''}
   </section>`;
 }
