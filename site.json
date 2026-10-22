@@ -15,14 +15,6 @@
           "icon": "icons/icon-180.png"
         },
         {
-          "repo": "hamzatamyachte/iphone-web-game",
-          "path": "iphone-web-game",
-          "name": "Dodge",
-          "description": "Dodge meteors, grab coins, unlock animal friends.",
-          "icon": "icons/fox-180.png",
-          "unlisted": true
-        },
-        {
           "repo": "hamzatamyachte/iphone-color-sort",
           "path": "iphone-color-sort",
           "name": "Color Sort",
