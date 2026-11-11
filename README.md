@@ -1,6 +1,6 @@
 # Hamza Tamyachte
 
-Games and side projects: https://hamzatamyachte.github.io/
+Software developer in e-learning (Moodle), based in The Hague. Profile, games and apps: https://hamzatamyachte.github.io/
 
 ## Games
 
@@ -10,10 +10,7 @@ Games and side projects: https://hamzatamyachte.github.io/
 
 Made for iPhone. Open a game in Safari, tap Share, then "Add to Home Screen" to play full screen and offline.
 
-## Fitness
+## Apps
 
 - [Park Workout](https://hamzatamyachte.github.io/iphone-park-workout/): workout timer with routines for every goal, levels 1 to 10, rounds and rest, voice cues.
-
-## Home
-
 - [Boodschappen](https://hamzatamyachte.github.io/iphone-boodschappen/): shopping list, everyday items by category and shop, tick off what is in the cart.

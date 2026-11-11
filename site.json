@@ -1,11 +1,24 @@
 {
   "title": "Hamza Tamyachte",
-  "tagline": "Games and side projects.",
+  "profile": {
+    "name": "Hamza Tamyachte",
+    "role": "Software Developer, E-learning (Moodle)",
+    "location": "The Hague, Netherlands",
+    "avatar": "avatar.png",
+    "about": [
+      "I build and maintain e-learning platforms on Moodle: plugins, course formats, integrations, reporting and the servers they run on.",
+      "In my spare time I make small web apps and games for the iPhone. They are all listed on this page, free to use and they work offline."
+    ],
+    "skills": ["PHP", "Moodle", "Moodle Workplace", "JavaScript", "SQL", "Docker", "Bash"],
+    "links": [
+      { "label": "GitHub", "url": "https://github.com/hamzatamyachte" }
+    ]
+  },
+  "tip": "Tip: on iPhone, open an app in Safari, tap Share, then \"Add to Home Screen\" to run it full screen and offline.",
   "sections": [
     {
       "id": "games",
       "title": "Games",
-      "note": "Tip: open a game in Safari, tap Share, then \"Add to Home Screen\" to play full screen and offline.",
       "items": [
         {
           "repo": "hamzatamyachte/iphone-hanoi",
@@ -31,9 +44,8 @@
       ]
     },
     {
-      "id": "fitness",
-      "title": "Fitness",
-      "note": "Tip: open it in Safari, tap Share, then \"Add to Home Screen\" so it runs full screen, keeps the screen on and works offline.",
+      "id": "apps",
+      "title": "Apps",
       "items": [
         {
           "repo": "hamzatamyachte/iphone-park-workout",
@@ -41,14 +53,7 @@
           "name": "Park Workout",
           "description": "Workout timer: routines for every goal, levels 1 to 10, rounds and rest, voice cues.",
           "icon": "icons/icon-180.png"
-        }
-      ]
-    },
-    {
-      "id": "home",
-      "title": "Home",
-      "note": "Tip: open it in Safari, tap Share, then \"Add to Home Screen\" so it runs full screen and works offline.",
-      "items": [
+        },
         {
           "repo": "hamzatamyachte/iphone-boodschappen",
           "path": "iphone-boodschappen",

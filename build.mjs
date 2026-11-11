@@ -1,4 +1,5 @@
-// Builds the public site from site.json: title, tagline and sections of items.
+// Builds the public site from site.json: profile (main page), sections of items (menu) and a tip.
+// Files in site/ other than index.html (the template) are copied to the site root.
 // Item with `repo` + `path`: cloned into src/<path> by the workflow (SOURCES_TOKEN for private repos),
 // minified here and served at /<path>/. Its repo sends a `source-updated` dispatch on push.
 // Item with `url`: plain link card.
@@ -72,7 +73,7 @@ function itemCard(item) {
   const external = item.repo ? '' : ' target="_blank" rel="noopener"';
   return `
     <a class="item" href="${escapeHtml(href)}"${external}>
-      ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="72" height="72">` : ''}
+      ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="52" height="52">` : ''}
       <span class="text">
         <span class="name">${escapeHtml(item.name)}</span>
         ${item.description ? `<span class="desc">${escapeHtml(item.description)}</span>` : ''}
@@ -80,23 +81,66 @@ function itemCard(item) {
     </a>`;
 }
 
-function sectionHtml(section) {
+function groupHtml(section) {
   const items = section.items.filter(i => !i.unlisted);
   if (!items.length) return '';
   return `
-  <section id="${escapeHtml(section.id)}">
+  <div class="group" id="${escapeHtml(section.id)}">
     <h2>${escapeHtml(section.title)}</h2>
     <div class="list">${items.map(itemCard).join('')}</div>
-    ${section.note ? `<p class="note">${escapeHtml(section.note)}</p>` : ''}
-  </section>`;
+  </div>`;
+}
+
+// Side bar (wide screens) or list under the profile (phones).
+function menuHtml(site) {
+  return `
+<nav class="menu" aria-label="Games and apps">
+  ${site.sections.map(groupHtml).join('')}
+  ${site.tip ? `<p class="tip">${escapeHtml(site.tip)}</p>` : ''}
+</nav>`;
+}
+
+const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+function heroHtml(profile) {
+  const links = (profile.links || []).map(l =>
+    `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener me">${escapeHtml(l.label)}</a>`).join('');
+  return `
+<header class="hero">
+  ${profile.avatar ? `<img class="avatar" src="${escapeHtml(profile.avatar)}" alt="" width="128" height="128">` : ''}
+  <div>
+    <h1>${escapeHtml(profile.name)}</h1>
+    ${profile.role ? `<p class="role">${escapeHtml(profile.role)}</p>` : ''}
+    ${profile.location ? `<p class="meta">${PIN}${escapeHtml(profile.location)}</p>` : ''}
+    ${links ? `<div class="links">${links}</div>` : ''}
+  </div>
+</header>`;
+}
+
+function detailsHtml(profile) {
+  const about = (profile.about || []).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  const skills = (profile.skills || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+  return `
+<main class="details">
+  ${about ? `<section><h2>About</h2>${about}</section>` : ''}
+  ${skills ? `<section><h2>Skills</h2><ul class="chips">${skills}</ul></section>` : ''}
+</main>`;
 }
 
 async function buildIndex(site) {
+  const profile = site.profile || { name: site.title };
+  // Everything in site/ except the template is a static asset (avatar and the like).
+  for (const entry of await readdir('site')) {
+    if (entry !== 'index.html' && !entry.startsWith('.')) await copyFile(join('site', entry), join(DIST, entry));
+  }
   const template = await readFile('site/index.html', 'utf8');
   const html = template
     .replaceAll('{{title}}', escapeHtml(site.title))
-    .replaceAll('{{tagline}}', escapeHtml(site.tagline || ''))
-    .replace('<!--SECTIONS-->', site.sections.map(sectionHtml).join(''));
+    .replaceAll('{{description}}', escapeHtml([profile.role, profile.location].filter(Boolean).join(', ')))
+    .replaceAll('{{avatar}}', escapeHtml(profile.avatar || ''))
+    .replace('<!--HERO-->', heroHtml(profile))
+    .replace('<!--MENU-->', menuHtml(site))
+    .replace('<!--DETAILS-->', detailsHtml(profile));
   await writeFile(join(DIST, 'index.html'), await minifyHtml(html, htmlOptions));
 }
 
