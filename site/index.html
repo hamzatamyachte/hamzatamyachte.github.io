@@ -8,6 +8,10 @@
 <meta name="description" content="{{description}}">
 <title>{{title}}</title>
 <link rel="icon" href="{{avatar}}">
+<script>
+  // Restore the collapsed side bar before first paint.
+  try { if (localStorage.getItem('menu') === 'collapsed') document.documentElement.classList.add('collapsed'); } catch (e) {}
+</script>
 <style>
   :root {
     --bg: #0b0b1a;
@@ -79,13 +83,24 @@
   .text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .name { font-size: 16px; font-weight: 700; }
   .desc { color: var(--dim); font-size: 13px; line-height: 1.35; }
+  .toggle { display: none; }
+
+  .intro { color: var(--dim); font-size: 14px !important; }
+  .repos { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .repo {
+    display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 14px;
+    background: var(--card); border: 1px solid var(--line); text-decoration: none; min-width: 0;
+  }
+  .repo:hover { background: var(--card-hover); }
+  .repo .name { font-size: 15px; overflow-wrap: anywhere; }
+
   .tip { color: var(--dim); font-size: 13px; line-height: 1.45; margin: 24px 0 0; }
 
   /* Wide screens: the menu becomes a fixed side bar. */
   @media (min-width: 860px) {
     .page {
       max-width: none; margin: 0; padding: 0; gap: 0 56px;
-      grid-template-columns: 320px minmax(0, 720px);
+      grid-template-columns: var(--side-w, 320px) minmax(0, 760px);
       grid-template-rows: auto 1fr;
       grid-template-areas: "menu hero" "menu details";
     }
@@ -94,6 +109,21 @@
       padding: 32px 20px; background: var(--side); border-right: 1px solid var(--line);
     }
     .item { background: none; }
+    .toggle {
+      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: -8px 0 8px auto;
+      border: 0; border-radius: 10px; background: none; color: var(--dim); cursor: pointer;
+    }
+    .toggle:hover { background: var(--card-hover); color: var(--text); }
+    .toggle svg { width: 20px; height: 20px; }
+
+    /* Collapsed: icons only. */
+    .collapsed .page { --side-w: 77px; }
+    .collapsed .menu { padding: 32px 12px; }
+    .collapsed .menu h2, .collapsed .menu .text, .collapsed .tip { display: none; }
+    .collapsed .toggle { margin: -8px auto 8px; }
+    .collapsed .toggle svg { transform: rotate(180deg); }
+    .collapsed .item { padding: 0; justify-content: center; }
+    .collapsed .group + .group { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
     .hero { padding: 64px 32px 40px 0; gap: 28px; }
     .details { padding: 0 32px 64px 0; }
     .avatar { width: 128px; height: 128px; }
@@ -107,5 +137,22 @@
 <!--MENU-->
 <!--DETAILS-->
 </div>
+<script>
+  (function () {
+    var root = document.documentElement, btn = document.querySelector('.toggle');
+    function sync() {
+      var collapsed = root.classList.contains('collapsed'), label = collapsed ? 'Expand menu' : 'Collapse menu';
+      btn.setAttribute('aria-expanded', String(!collapsed));
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+    }
+    btn.addEventListener('click', function () {
+      var collapsed = root.classList.toggle('collapsed');
+      try { localStorage.setItem('menu', collapsed ? 'collapsed' : 'open'); } catch (e) {}
+      sync();
+    });
+    sync();
+  })();
+</script>
 </body>
 </html>

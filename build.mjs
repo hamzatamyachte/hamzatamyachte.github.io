@@ -1,4 +1,4 @@
-// Builds the public site from site.json: profile (main page), sections of items (menu) and a tip.
+// Builds the public site from site.json: profile and contributions (main page), sections of items (menu) and a tip.
 // Files in site/ other than index.html (the template) are copied to the site root.
 // Item with `repo` + `path`: cloned into src/<path> by the workflow (SOURCES_TOKEN for private repos),
 // minified here and served at /<path>/. Its repo sends a `source-updated` dispatch on push.
@@ -72,7 +72,7 @@ function itemCard(item) {
   const icon = item.icon ? (item.repo ? `${item.path}/${item.icon}` : item.icon) : null;
   const external = item.repo ? '' : ' target="_blank" rel="noopener"';
   return `
-    <a class="item" href="${escapeHtml(href)}"${external}>
+    <a class="item" href="${escapeHtml(href)}" title="${escapeHtml(item.name)}"${external}>
       ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="52" height="52">` : ''}
       <span class="text">
         <span class="name">${escapeHtml(item.name)}</span>
@@ -94,12 +94,14 @@ function groupHtml(section) {
 // Side bar (wide screens) or list under the profile (phones).
 function menuHtml(site) {
   return `
-<nav class="menu" aria-label="Games and apps">
+<nav class="menu" id="menu" aria-label="Games and apps">
+  <button class="toggle" type="button" aria-controls="menu" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu">${CHEVRON}</button>
   ${site.sections.map(groupHtml).join('')}
   ${site.tip ? `<p class="tip">${escapeHtml(site.tip)}</p>` : ''}
 </nav>`;
 }
 
+const CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>';
 const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 
 function heroHtml(profile) {
@@ -117,13 +119,26 @@ function heroHtml(profile) {
 </header>`;
 }
 
-function detailsHtml(profile) {
+function contributionsHtml(c) {
+  if (!c || !c.items?.length) return '';
+  const rows = c.items.map(i => `
+    <a class="repo" href="${escapeHtml(i.url)}" target="_blank" rel="noopener">
+      <span class="name">${escapeHtml(i.name)}</span>
+      ${i.description ? `<span class="desc">${escapeHtml(i.description)}</span>` : ''}
+    </a>`).join('');
+  return `<section id="contributions"><h2>${escapeHtml(c.title)}</h2>
+    ${c.intro ? `<p class="intro">${escapeHtml(c.intro)}</p>` : ''}
+    <div class="repos">${rows}</div></section>`;
+}
+
+function detailsHtml(profile, contributions) {
   const about = (profile.about || []).map(p => `<p>${escapeHtml(p)}</p>`).join('');
   const skills = (profile.skills || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
   return `
 <main class="details">
   ${about ? `<section><h2>About</h2>${about}</section>` : ''}
   ${skills ? `<section><h2>Skills</h2><ul class="chips">${skills}</ul></section>` : ''}
+  ${contributionsHtml(contributions)}
 </main>`;
 }
 
@@ -140,7 +155,7 @@ async function buildIndex(site) {
     .replaceAll('{{avatar}}', escapeHtml(profile.avatar || ''))
     .replace('<!--HERO-->', heroHtml(profile))
     .replace('<!--MENU-->', menuHtml(site))
-    .replace('<!--DETAILS-->', detailsHtml(profile));
+    .replace('<!--DETAILS-->', detailsHtml(profile, site.contributions));
   await writeFile(join(DIST, 'index.html'), await minifyHtml(html, htmlOptions));
 }
 

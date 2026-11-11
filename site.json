@@ -9,9 +9,116 @@
       "I build and maintain e-learning platforms on Moodle: plugins, course formats, integrations, reporting and the servers they run on.",
       "In my spare time I make small web apps and games for the iPhone. They are all listed on this page, free to use and they work offline."
     ],
-    "skills": ["PHP", "Moodle", "Moodle Workplace", "JavaScript", "SQL", "Docker", "Bash"],
+    "skills": [
+      "PHP",
+      "Moodle",
+      "Moodle Workplace",
+      "JavaScript",
+      "SQL",
+      "Docker",
+      "Bash"
+    ],
     "links": [
-      { "label": "GitHub", "url": "https://github.com/hamzatamyachte" }
+      {
+        "label": "GitHub",
+        "url": "https://github.com/hamzatamyachte"
+      }
+    ]
+  },
+  "contributions": {
+    "title": "Moodle contributions",
+    "intro": "Public repositories I have contributed to.",
+    "items": [
+      {
+        "name": "local_reportlms",
+        "url": "https://github.com/LdesignMedia/moodle-local_reportlms",
+        "description": "Training dashboards for completion, overdue training, attempts and certificates per department."
+      },
+      {
+        "name": "gitlab-ci",
+        "url": "https://github.com/LdesignMedia/gitlab-ci",
+        "description": "GitLab CI template for testing Moodle plugins."
+      },
+      {
+        "name": "filter_stackview",
+        "url": "https://github.com/avetica/moodle-filter_stackview",
+        "description": "Turns a stackview shortcode into an embedded image stack viewer."
+      },
+      {
+        "name": "mod_stackview",
+        "url": "https://github.com/avetica/moodle-mod_stackview",
+        "description": "Course activity that shows images as a scrollable stack, like radiology software."
+      },
+      {
+        "name": "moodle-codespace",
+        "url": "https://github.com/LdesignMedia/moodle-codespace",
+        "description": "Moodle development environment for GitHub Codespaces."
+      },
+      {
+        "name": "enrol_coursepayment",
+        "url": "https://github.com/avetica/moodle-enrol_coursepayment",
+        "description": "Sell courses to your Moodle users."
+      },
+      {
+        "name": "availability_coursepayment",
+        "url": "https://github.com/avetica/moodle-availability_coursepayment",
+        "description": "Users pay first before they can enter an activity."
+      },
+      {
+        "name": "block_user_favorites",
+        "url": "https://github.com/LdesignMedia/moodle-block-user_favorites",
+        "description": "Lets users mark pages as favourites."
+      },
+      {
+        "name": "local_disablerightclick",
+        "url": "https://github.com/jeontwikkeling-nl/moodle-local_disablerightclick",
+        "description": "Disables right click, cut, copy, paste and developer options."
+      },
+      {
+        "name": "block_mfavatar",
+        "url": "https://github.com/LdesignMedia/moodle-block_mfavatar",
+        "description": "Make a profile picture with your webcam."
+      },
+      {
+        "name": "availability_ipaddress",
+        "url": "https://github.com/LdesignMedia/moodle-availability_ipaddress",
+        "description": "Restrict access to an activity by IP address."
+      },
+      {
+        "name": "local_guardlms",
+        "url": "https://github.com/LdesignMedia/moodle-local_guardlms",
+        "description": "Vulnerability alerts, update tracking and security checks for a Moodle site."
+      },
+      {
+        "name": "local_commander",
+        "url": "https://github.com/LdesignMedia/moodle-local_commander",
+        "description": "Quick keyboard navigation through Moodle."
+      },
+      {
+        "name": "block_fastnav",
+        "url": "https://github.com/Lesterhuis-Training-en-Consultancy/moodle-block_fastnav",
+        "description": "Faster navigation inside a course."
+      },
+      {
+        "name": "mchef",
+        "url": "https://github.com/citricity/mchef",
+        "description": "Moodle Docker wrapper that creates containers from recipe templates."
+      },
+      {
+        "name": "block_lw_courses",
+        "url": "https://github.com/LdesignMedia/moodle-block_lw_courses",
+        "description": "\"My Courses\" block."
+      },
+      {
+        "name": "tool_groupautoenrol",
+        "url": "https://github.com/LdesignMedia/moodle-tool_groupautoenrol",
+        "description": "Automatically places enrolled users into course groups."
+      },
+      {
+        "name": "mod_tincanlaunch",
+        "url": "https://github.com/jeontwikkeling-nl/moodle-mod_tincanlaunch",
+        "description": "Launches xAPI content from a Moodle activity."
+      }
     ]
   },
   "tip": "Tip: on iPhone, open an app in Safari, tap Share, then \"Add to Home Screen\" to run it full screen and offline.",
