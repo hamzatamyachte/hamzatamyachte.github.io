@@ -22,6 +22,7 @@
     --text: #f4f6ff;
     --dim: #8a8fb8;
     --accent: #3ef0ff;
+    --violet: #b39dff;
     --font: -apple-system, "SF Pro Rounded", system-ui, sans-serif;
   }
   @media (prefers-color-scheme: light) {
@@ -34,6 +35,7 @@
       --text: #14132b;
       --dim: #5c5f82;
       --accent: #0a8fa0;
+      --violet: #6a4fd8;
     }
   }
   * { box-sizing: border-box; }
@@ -71,64 +73,119 @@
   .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
   .chips li { padding: 6px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); font-size: 14px; }
 
-  .group + .group { margin-top: 24px; }
+  /* Menu: section heading with icon tile, items below. */
+  #games { --c: var(--accent); }
+  #apps { --c: var(--violet); }
+  .group + .group { margin-top: 20px; }
+  .head {
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px; margin: 0 0 8px;
+    border: 0; border-radius: 14px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  }
+  .head:hover { background: var(--card-hover); }
+  .tile {
+    display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; flex: none;
+    color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent);
+    transition: box-shadow .15s, background .15s;
+  }
+  .tile svg { width: 20px; height: 20px; }
+  .label { font-size: 16px; font-weight: 700; }
+  .count { font-size: 12px; font-weight: 600; color: var(--dim); padding: 2px 8px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); }
+  .arrow { width: 16px; height: 16px; margin-left: auto; color: var(--dim); transition: transform .2s; }
+  .folded .arrow { transform: rotate(-90deg); }
+  .folded .fly { display: none; }
+  .fly-title { display: none; }
   .list { display: grid; gap: 8px; }
   .item {
-    display: flex; align-items: center; gap: 14px; padding: 10px; border-radius: 16px;
+    display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 14px;
     background: var(--card); text-decoration: none; transition: background .15s, transform .15s;
   }
   .item:hover { background: var(--card-hover); }
   .item:active { transform: scale(.98); }
-  .item img { width: 52px; height: 52px; border-radius: 12px; flex: none; }
+  .item img { width: 44px; height: 44px; border-radius: 11px; flex: none; }
   .text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .name { font-size: 16px; font-weight: 700; }
+  .name { font-size: 15px; font-weight: 700; }
   .desc { color: var(--dim); font-size: 13px; line-height: 1.35; }
   .toggle { display: none; }
 
   .intro { color: var(--dim); font-size: 14px !important; }
-  .repos { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  h2 .count { margin-left: 6px; letter-spacing: 0; vertical-align: 1px; }
+  .repos { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
   .repo {
-    display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 14px;
-    background: var(--card); border: 1px solid var(--line); text-decoration: none; min-width: 0;
+    --c: var(--accent);
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 16px; min-width: 0;
+    background: var(--card); border: 1px solid var(--line); text-decoration: none;
+    transition: border-color .15s, transform .15s, background .15s;
   }
-  .repo:hover { background: var(--card-hover); }
-  .repo .name { font-size: 15px; overflow-wrap: anywhere; }
+  .repo.tooling { --c: var(--violet); }
+  .repo:hover { border-color: var(--c); transform: translateY(-2px); }
+  .repo .tile { width: 36px; height: 36px; border-radius: 10px; }
+  .repo .tile svg { width: 18px; height: 18px; }
+  .repo .text { flex: 1; }
+  .repo .name { overflow-wrap: anywhere; }
+  .kind { font-size: 12px; font-weight: 600; color: var(--c); }
+  .repo .desc { margin-top: 4px; }
+  .out { width: 16px; height: 16px; flex: none; color: var(--dim); opacity: .45; transition: opacity .15s, color .15s, transform .15s; }
+  .repo:hover .out { opacity: 1; color: var(--c); transform: translate(2px, -2px); }
 
-  .tip { color: var(--dim); font-size: 13px; line-height: 1.45; margin: 24px 0 0; }
+  .tip { display: flex; gap: 10px; color: var(--dim); font-size: 13px; line-height: 1.45; margin: 24px 0 0; }
+  .tip svg { width: 16px; height: 16px; flex: none; margin-top: 1px; }
 
   /* Wide screens: the menu becomes a fixed side bar. */
   @media (min-width: 860px) {
     .page {
       max-width: none; margin: 0; padding: 0; gap: 0 56px;
-      grid-template-columns: var(--side-w, 320px) minmax(0, 760px);
+      grid-template-columns: var(--side-w, 304px) minmax(0, 760px);
       grid-template-rows: auto 1fr;
       grid-template-areas: "menu hero" "menu details";
+      transition: grid-template-columns .22s ease;
     }
     .menu {
-      position: sticky; top: 0; align-self: start; height: 100dvh; overflow-y: auto;
-      padding: 32px 20px; background: var(--side); border-right: 1px solid var(--line);
+      position: sticky; top: 0; align-self: start; height: 100dvh; overflow-y: auto; z-index: 2;
+      display: flex; flex-direction: column;
+      padding: 20px 16px; background: var(--side); border-right: 1px solid var(--line);
     }
-    .item { background: none; }
+    .item { background: none; padding: 8px; }
+    .tip { margin-top: auto; padding: 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
     .toggle {
-      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: -8px 0 8px auto;
-      border: 0; border-radius: 10px; background: none; color: var(--dim); cursor: pointer;
+      display: grid; place-items: center; width: 40px; height: 40px; margin: 0 0 16px 6px; flex: none;
+      border: 0; border-radius: 12px; background: none; color: var(--dim); cursor: pointer;
     }
     .toggle:hover { background: var(--card-hover); color: var(--text); }
     .toggle svg { width: 20px; height: 20px; }
-
-    /* Collapsed: icons only. */
-    .collapsed .page { --side-w: 77px; }
-    .collapsed .menu { padding: 32px 12px; }
-    .collapsed .menu h2, .collapsed .menu .text, .collapsed .tip { display: none; }
-    .collapsed .toggle { margin: -8px auto 8px; }
-    .collapsed .toggle svg { transform: rotate(180deg); }
-    .collapsed .item { padding: 0; justify-content: center; }
-    .collapsed .group + .group { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
     .hero { padding: 64px 32px 40px 0; gap: 28px; }
     .details { padding: 0 32px 64px 0; }
     .avatar { width: 128px; height: 128px; }
     h1 { font-size: 40px; }
+
+    /* Collapsed: a rail with one icon per section, items in a flyout. */
+    .collapsed .page { --side-w: 72px; }
+    .collapsed .menu { overflow: visible; padding: 20px 10px; align-items: center; }
+    .collapsed .toggle { margin: 0 0 16px; }
+    .collapsed .label, .collapsed .menu .count, .collapsed .arrow, .collapsed .tip { display: none; }
+    .collapsed .group { position: relative; margin: 0 0 8px; }
+    .collapsed .head { width: auto; padding: 6px; margin: 0; }
+    .collapsed .group:hover .head, .collapsed .group.open .head { background: none; }
+    .collapsed .group:hover .tile, .collapsed .group.open .tile, .collapsed .head:focus-visible .tile {
+      background: color-mix(in srgb, var(--c) 24%, transparent); box-shadow: 0 0 0 2px var(--c);
+    }
+    .collapsed .fly {
+      display: block; position: absolute; left: 100%; top: -8px; width: 316px; padding-left: 14px;
+      opacity: 0; visibility: hidden; transform: translateX(-6px); filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .28));
+      transition: opacity .16s, transform .16s, visibility .16s;
+    }
+    .collapsed .fly > * { background: var(--side); }
+    .collapsed .fly-title {
+      display: block; margin: 0; padding: 16px 18px 8px; border: 1px solid var(--line); border-bottom: 0;
+      border-radius: 18px 18px 0 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--c);
+    }
+    .collapsed .fly .list {
+      gap: 2px; padding: 0 8px 8px; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 18px 18px;
+    }
+    .collapsed .group:hover .fly, .collapsed .group:focus-within .fly, .collapsed .group.open .fly {
+      opacity: 1; visibility: visible; transform: none;
+    }
   }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
@@ -140,17 +197,34 @@
 <script>
   (function () {
     var root = document.documentElement, btn = document.querySelector('.toggle');
+    var groups = Array.prototype.slice.call(document.querySelectorAll('.group'));
+    function collapsed() { return root.classList.contains('collapsed') && matchMedia('(min-width: 860px)').matches; }
+    function closeAll(except) { groups.forEach(function (g) { if (g !== except) g.classList.remove('open'); }); }
     function sync() {
-      var collapsed = root.classList.contains('collapsed'), label = collapsed ? 'Expand menu' : 'Collapse menu';
-      btn.setAttribute('aria-expanded', String(!collapsed));
+      var label = root.classList.contains('collapsed') ? 'Expand menu' : 'Collapse menu';
+      btn.setAttribute('aria-expanded', String(!root.classList.contains('collapsed')));
       btn.setAttribute('aria-label', label);
       btn.title = label;
+      groups.forEach(function (g) {
+        var open = collapsed() ? g.classList.contains('open') : !g.classList.contains('folded');
+        g.querySelector('.head').setAttribute('aria-expanded', String(open));
+      });
     }
     btn.addEventListener('click', function () {
-      var collapsed = root.classList.toggle('collapsed');
-      try { localStorage.setItem('menu', collapsed ? 'collapsed' : 'open'); } catch (e) {}
+      var now = root.classList.toggle('collapsed');
+      closeAll();
+      try { localStorage.setItem('menu', now ? 'collapsed' : 'open'); } catch (e) {}
       sync();
     });
+    // Heading: pins the flyout on the rail, folds the section otherwise.
+    groups.forEach(function (g) {
+      g.querySelector('.head').addEventListener('click', function () {
+        if (collapsed()) { closeAll(g); g.classList.toggle('open'); } else { g.classList.toggle('folded'); }
+        sync();
+      });
+    });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.group')) { closeAll(); sync(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAll(); sync(); } });
     sync();
   })();
 </script>

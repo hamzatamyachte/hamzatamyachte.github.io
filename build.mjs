@@ -73,7 +73,7 @@ function itemCard(item) {
   const external = item.repo ? '' : ' target="_blank" rel="noopener"';
   return `
     <a class="item" href="${escapeHtml(href)}" title="${escapeHtml(item.name)}"${external}>
-      ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="52" height="52">` : ''}
+      ${icon ? `<img src="${escapeHtml(icon)}" alt="" width="44" height="44">` : ''}
       <span class="text">
         <span class="name">${escapeHtml(item.name)}</span>
         ${item.description ? `<span class="desc">${escapeHtml(item.description)}</span>` : ''}
@@ -81,13 +81,24 @@ function itemCard(item) {
     </a>`;
 }
 
+// Section heading: icon tile, title and item count. On the collapsed side bar only the tile shows
+// and the items open in a flyout next to it.
 function groupHtml(section) {
   const items = section.items.filter(i => !i.unlisted);
   if (!items.length) return '';
+  const title = escapeHtml(section.title);
   return `
   <div class="group" id="${escapeHtml(section.id)}">
-    <h2>${escapeHtml(section.title)}</h2>
-    <div class="list">${items.map(itemCard).join('')}</div>
+    <button class="head" type="button" aria-expanded="true" title="${title}">
+      <span class="tile">${ICONS[section.icon] || ICONS.apps}</span>
+      <span class="label">${title}</span>
+      <span class="count">${items.length}</span>
+      ${ARROW}
+    </button>
+    <div class="fly">
+      <p class="fly-title">${title}</p>
+      <div class="list">${items.map(itemCard).join('')}</div>
+    </div>
   </div>`;
 }
 
@@ -95,14 +106,24 @@ function groupHtml(section) {
 function menuHtml(site) {
   return `
 <nav class="menu" id="menu" aria-label="Games and apps">
-  <button class="toggle" type="button" aria-controls="menu" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu">${CHEVRON}</button>
+  <button class="toggle" type="button" aria-controls="menu" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu">${PANEL}</button>
   ${site.sections.map(groupHtml).join('')}
-  ${site.tip ? `<p class="tip">${escapeHtml(site.tip)}</p>` : ''}
+  ${site.tip ? `<p class="tip">${INFO}<span>${escapeHtml(site.tip)}</span></p>` : ''}
 </nav>`;
 }
 
-const CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>';
-const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+const svg = body => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+const ICONS = {
+  games: svg('<path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59l-.02.15C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.42.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26l-.01-.15A4 4 0 0 0 17.32 5z"/>'),
+  apps: svg('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>'),
+};
+const PANEL = svg('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/>');
+const ARROW = svg('<path d="M6 9l6 6 6-6"/>').replace('<svg', '<svg class="arrow"');
+const PACKAGE = svg('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>');
+const TERMINAL = svg('<path d="M4 17l6-6-6-6M12 19h8"/>');
+const OUT = svg('<path d="M7 17L17 7M8 7h9v9"/>').replace('<svg', '<svg class="out"');
+const INFO = svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>');
+const PIN = svg('<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>');
 
 function heroHtml(profile) {
   const links = (profile.links || []).map(l =>
@@ -119,14 +140,26 @@ function heroHtml(profile) {
 </header>`;
 }
 
+// Plugin type from the frankenstyle prefix; anything else is development tooling.
+const TYPES = { local: 'Local plugin', block: 'Block', mod: 'Activity', filter: 'Filter', enrol: 'Enrolment', availability: 'Availability', tool: 'Admin tool' };
+
 function contributionsHtml(c) {
   if (!c || !c.items?.length) return '';
-  const rows = c.items.map(i => `
-    <a class="repo" href="${escapeHtml(i.url)}" target="_blank" rel="noopener">
-      <span class="name">${escapeHtml(i.name)}</span>
-      ${i.description ? `<span class="desc">${escapeHtml(i.description)}</span>` : ''}
-    </a>`).join('');
-  return `<section id="contributions"><h2>${escapeHtml(c.title)}</h2>
+  const rows = c.items.map(i => {
+    const type = TYPES[i.name.split('_')[0]];
+    const owner = (i.url.match(/github\.com\/([^/]+)\//) || [])[1];
+    return `
+    <a class="repo${type ? '' : ' tooling'}" href="${escapeHtml(i.url)}" target="_blank" rel="noopener">
+      <span class="tile">${type ? PACKAGE : TERMINAL}</span>
+      <span class="text">
+        <span class="name">${escapeHtml(i.name)}</span>
+        <span class="kind">${escapeHtml([type || 'Tooling', owner].filter(Boolean).join(' · '))}</span>
+        ${i.description ? `<span class="desc">${escapeHtml(i.description)}</span>` : ''}
+      </span>
+      ${OUT}
+    </a>`;
+  }).join('');
+  return `<section id="contributions"><h2>${escapeHtml(c.title)} <span class="count">${c.items.length}</span></h2>
     ${c.intro ? `<p class="intro">${escapeHtml(c.intro)}</p>` : ''}
     <div class="repos">${rows}</div></section>`;
 }

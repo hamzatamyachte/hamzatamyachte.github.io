@@ -126,6 +126,7 @@
     {
       "id": "games",
       "title": "Games",
+      "icon": "games",
       "items": [
         {
           "repo": "hamzatamyachte/iphone-hanoi",
@@ -153,6 +154,7 @@
     {
       "id": "apps",
       "title": "Apps",
+      "icon": "apps",
       "items": [
         {
           "repo": "hamzatamyachte/iphone-park-workout",
